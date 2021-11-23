@@ -1,0 +1,3 @@
+User-agent: *
+Disallow:
+Sitemap: https://mateuszmiekicki.github.io/note/sitemap.xml

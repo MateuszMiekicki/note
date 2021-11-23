@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <title>github page</title>
+    <link href="https://mateuszmiekicki.github.io/note/feed.xml" rel="self" />
+    <link href="https://mateuszmiekicki.github.io/note" />
+    <updated>1970-01-01T01:00:00+01:00</updated>
+    <author>
+        <name>Mateusz Miękicki</name>
+    </author>
+    <id>https://mateuszmiekicki.github.io/note</id>
+
+</feed>
