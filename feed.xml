@@ -1,12 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-    <title>github page</title>
+    <title>My note</title>
     <link href="https://mateuszmiekicki.github.io/note/feed.xml" rel="self" />
     <link href="https://mateuszmiekicki.github.io/note" />
-    <updated>1970-01-01T01:00:00+01:00</updated>
+    <updated>2021-11-29T23:46:28+01:00</updated>
     <author>
         <name>Mateusz Miękicki</name>
     </author>
     <id>https://mateuszmiekicki.github.io/note</id>
 
+    <entry>
+        <title>Jenkins w dokerze i dockerowy pipeline</title>
+        <author>
+            <name>Mateusz Miękicki</name>
+        </author>
+        <link href="https://mateuszmiekicki.github.io/note/jenkins-w-dokerze-i-dockerowy-pipeline/index.html"/>
+        <id>https://mateuszmiekicki.github.io/note/jenkins-w-dokerze-i-dockerowy-pipeline/index.html</id>
+
+        <updated>2021-11-29T23:46:28+01:00</updated>
+            <summary></summary>
+        <content type="html">
+            <![CDATA[
+                <h2>TL;DR</h2>
+<p>Zainstaluj dockera na w WSL i ustaw do niego ścieżkę w docker-compose. </p>
+<h2>Założenie</h2>
+<h3>Lead</h3>
+<p>Uruchomienie Jenkinsa w kontenerze opartym na Dockerze. Dodatkowo chcemy uruchomić nowy obraz Dockera w obecnym obrazie Jenkinsa. Reasumując, chcemy stworzyć kontener, który uruchomi nowy obraz przy każdorazowym uruchomieniu pipelinu. </p>
+<h3>Jednostka testowa:</h3>
+<ul>
+<li>Urządzenie
+<ul>
+<li>Processor i7-9750H CPU @ 2.60GHz</li>
+<li>RAM 16.0 GB </li>
+</ul>
+</li>
+<li>Software
+<ul>
+<li>Windows 11 Pro x64
+<ul>
+<li>Version 21H2</li>
+<li>OS build 22000.348</li>
+</ul>
+</li>
+<li>Docker version 20.10.10, build b485636</li>
+<li>Docker Compose version v2.1.1</li>
+<li>Ubuntu 20.04 LTS
+<ul>
+<li>5.10.60.1-microsoft-standard-WSL2</li>
+<li>focal</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2>Lista kroków od początku do końca</h2>
+<ol>
+<li>Włącz WSL 2<a href="#INTERNAL_LINK#/post/null" title="https://docs.microsoft.com/en-us/windows/wsl/install"> https://docs.microsoft.com/en-us/windows/wsl/install</a>
+<ol>
+<li>Zainstaluj Ubuntu oraz zaktualizuj repozytorium. <a href="#INTERNAL_LINK#/post/null" title="https://ubuntu.com/wsl">https://ubuntu.com/wsl</a></li>
+<li>Zainstaluj Dockera dla Ubuntu <a href="#INTERNAL_LINK#/post/null" title="https://docs.docker.com/engine/install/ubuntu/">https://docs.docker.com/engine/install/ubuntu/</a></li>
+</ol>
+</li>
+<li>Zainstaluj "Docker Desktop on Windows" <a href="#INTERNAL_LINK#/post/null" title="https://docs.docker.com/desktop/windows/install/">https://docs.docker.com/desktop/windows/install/</a></li>
+<li>Utwórz folder z plikiem docker-compose
+<pre>#docker-compose.yml<br>services:<br>  jenkins:<br>    container_name: jenkins<br>    build: .<br>    privileged: true<br>    user: root<br>    ports:<br>      - 8081:8080<br>      - 50000:50000<br>    volumes:<br>      - ~/jenkins:/var/jenkins_home<br>      - /var/run/docker.sock:/var/run/docker.sock<br>      - /usr/bin/docker:/usr/local/bin/docker<br><br>volumes:<br>  jenkins_home:</pre>
+<p>oraz z Dockerfilem(sam obraz Jenkinsa może być inny, jdk w tym przypadku nie będzie potrzebne)</p>
+<pre><code>#Dockerfile</code><br><code>FROM jenkins/jenkins:lts-jdk11</code><br><code>USER root</code><br><code>RUN apt-get -y update &amp;&amp; \</code><br><code>    apt-get -y upgrade &amp;&amp; \</code><br><code>    apt-get install -y wget &amp;&amp; \</code><br><code>    apt-get install -y unzip &amp;&amp; \</code><br><code>    apt-get install -y nano &amp;&amp; \</code><br><code>    apt-get install -y cmake &amp;&amp; \</code><br><code>    apt-get install -y gcc &amp;&amp; \</code><br><code>    rm -rf /var/lib/apt/lists/*</code><br><code># COPY plugins.txt /usr/share/jenkins/plugins.txt</code><br><code># RUN jenkins-plugin-cli -f /usr/share/jenkins/plugins.txt</code></pre>
+<ol>
+<li>nasza_ścieżka:ścieżka_docker</li>
+<li><strong>~/jenkins:/var/jenkins_home - </strong>miejsce gdzie zapiszą się ustawienia Jenkinsa</li>
+<li><strong>/var/run/docker.sock:/var/run/docker.sock - </strong>miejsce gdzie docker będzie szukał domyślnych portów</li>
+<li><strong>/usr/bin/docker:/usr/local/bin/docker - </strong>miejsce gdzie zainstalowaliśmy dockera na/w Ubuntu(tym na WSL)</li>
+</ol>
+</li>
+<li>Wchodzimy w folder gdzie znajdują się wyżej wspomniane pliki, uruchamiamy konsole i wpisujemy 
+<pre><code>docker-compose up -d</code></pre>
+W tym momencie kontener powinien się zbudować jednocześnie zaciągając obraz z dockerhuba. </li>
+<li>Odpalamy przeglądarkę i wpisujemy <a href="#INTERNAL_LINK#/post/null" title="http://localhost:8081/">http://localhost:8081/</a></li>
+<li>
+<p>Tworzymy nowy projekt. Z racji, że chce jak najszybciej zobaczyć efekt wpisuję pipeline z "palca" w sekcji konfiguracja </p>
+<pre><code>pipeline {</code><br><code>    agent {</code><br><code>        docker { image 'rikorose/gcc-cmake' }</code><br><code>    }</code><br><code>    stages {</code><br><code>        stage('gcc') {</code><br><code>            steps {</code><br><code>                sh 'gcc --version'</code><br><code>            }</code><br><code>        }</code><br><code>        stage('cmake') {</code><br><code>            steps {</code><br><code>                sh 'cmake --version'</code><br><code>            }</code><br><code>        }</code><br><code>    }</code><br><code>}</code></pre>
+</li>
+<li> Efektem powinno być wyświetlenie obecnych wersji g++ i CMake w wyjściu konsoli Jenkinsa</li>
+</ol>
+<h2>Uwagi</h2>
+<p>Czy warto uruchamiać każdorazowo obraz z czymś, co możemy zainstalować raz? Imo nie. W tym przypadku dużo lepszym wyborem jest zainstalowanie CMake i GCC osobno. Z racji, że nasze działania nie mają wpływu na te narzędzia. Oczywiście przy testach integracyjnych takie podejście będzie lepsze, to znaczy każdorazowe tworzenie nowego obrazu bazy, by zachować powtarzalność. </p>
+<h2>Wersja z "statycznym" CMakiem i GCC</h2>
+<p>Generalnie zostaje to co było, bo i tak Jenkins będzie nam potrzebny. Zmieni się jedynie źródło naszych narzędzi. Są one pobierane przy tworzeniu kontenera. </p>
+<h3>Nowy pipeline</h3>
+<pre><code>pipeline {</code><br><code>    agent any</code><br><code>    stages {</code><br><code>        stage('gcc') {</code><br><code>            steps {</code><br><code>                sh 'gcc --version'</code><br><code>            }</code><br><code>        }</code><br><code>        stage('cmake') {</code><br><code>            steps {</code><br><code>                sh 'cmake --version'</code><br><code>            }</code><br><code>        }</code><br><code>    }</code><br><code>}</code></pre>
+<p>Różnica jest w agencie, nie używamy żadnego. Poza tym zostaje to, co było. </p>
+            ]]>
+        </content>
+    </entry>
 </feed>
