@@ -16,8 +16,8 @@
         </author>
         <link href="https://mateuszmiekicki.github.io/note/jenkins-w-dokerze-i-dockerowy-pipeline/index.html"/>
         <id>https://mateuszmiekicki.github.io/note/jenkins-w-dokerze-i-dockerowy-pipeline/index.html</id>
+            <category term="jenkins"/>
             <category term="docker"/>
-            <category term="Jenkins"/>
 
         <updated>2021-11-29T23:50:32+01:00</updated>
             <summary></summary>
