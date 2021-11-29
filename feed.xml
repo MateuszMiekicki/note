@@ -3,7 +3,7 @@
     <title>My note</title>
     <link href="https://mateuszmiekicki.github.io/note/feed.xml" rel="self" />
     <link href="https://mateuszmiekicki.github.io/note" />
-    <updated>2021-11-29T23:46:28+01:00</updated>
+    <updated>2021-11-29T23:50:32+01:00</updated>
     <author>
         <name>Mateusz Miękicki</name>
     </author>
@@ -16,8 +16,10 @@
         </author>
         <link href="https://mateuszmiekicki.github.io/note/jenkins-w-dokerze-i-dockerowy-pipeline/index.html"/>
         <id>https://mateuszmiekicki.github.io/note/jenkins-w-dokerze-i-dockerowy-pipeline/index.html</id>
+            <category term="docker"/>
+            <category term="Jenkins"/>
 
-        <updated>2021-11-29T23:46:28+01:00</updated>
+        <updated>2021-11-29T23:50:32+01:00</updated>
             <summary></summary>
         <content type="html">
             <![CDATA[

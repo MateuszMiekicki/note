@@ -18,9 +18,11 @@
                 "name": "Mateusz Miękicki"
             },
             "tags": [
+                   "docker",
+                   "Jenkins"
             ],
             "date_published": "2021-11-24T20:07:09+01:00",
-            "date_modified": "2021-11-29T23:46:28+01:00"
+            "date_modified": "2021-11-29T23:50:32+01:00"
         }
     ]
 }
