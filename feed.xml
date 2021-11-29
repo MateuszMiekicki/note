@@ -20,7 +20,11 @@
             <category term="docker"/>
 
         <updated>2021-11-29T23:50:32+01:00</updated>
-            <summary></summary>
+            <summary>
+                <![CDATA[
+                    TL;DR Zainstaluj dockera na w WSL i ustaw do niego ścieżkę w docker-compose. Uruchomienie Jenkinsa w kontenerze opartym na Dockerze. Dodatkowo chcemy uruchomić nowy obraz Dockera w obecnym obrazie Jenkinsa. Reasumując, chcemy stworzyć kontener, który uruchomi nowy obraz przy każdorazowym uruchomieniu pipelinu. #docker-compose.yml services: jenkins:&hellip;
+                ]]>
+            </summary>
         <content type="html">
             <![CDATA[
                 <h2>TL;DR</h2>
